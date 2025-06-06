@@ -1,0 +1,10 @@
+[
+  {
+    "id": "1",
+    "name": "Administrator",
+    "email": "admin@company.com",
+    "password": "$2a$10$Z6y9.7l9j861bQyoPiaoAe9gO1Gc3jS/AiVy7xxcYcXMA8KpR/FMS",
+    "role": "admin",
+    "createdAt": "2025-06-06T12:20:49.642Z"
+  }
+]
