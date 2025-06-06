@@ -1,90 +1,178 @@
-# Sistema de Gerenciamento de IPs
+# 🌐 Sistema de Gerenciamento de IPs
 
-Um sistema web profissional de gerenciamento de endereços IP projetado para redes corporativas. Esta aplicação fornece ferramentas abrangentes para gerenciar alocações de IP, rastrear recursos de rede e manter documentação de rede.
+<div align="center">
 
-## Funcionalidades
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node.js](https://img.shields.io/badge/node.js-18+-green.svg)
+![React](https://img.shields.io/badge/react-18.3.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/typescript-5.5.3-blue.svg)
+
+**Um sistema web profissional de gerenciamento de endereços IP para redes corporativas**
+
+[Demonstração](#demonstração) • [Instalação](#instalação) • [Documentação](#documentação) • [Contribuição](#contribuição)
+
+</div>
+
+---
+
+## 📋 Índice
+
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Demonstração](#demonstração)
+- [Instalação](#instalação)
+- [Configuração](#configuração)
+- [Uso](#uso)
+- [API](#api)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
+- [Suporte](#suporte)
+
+## 🎯 Sobre o Projeto
+
+O Sistema de Gerenciamento de IPs é uma aplicação web moderna e profissional projetada para facilitar o gerenciamento de endereços IP em redes corporativas. Desenvolvido com foco na simplicidade, segurança e eficiência, oferece uma interface intuitiva para administradores de rede controlarem e documentarem seus recursos de rede.
+
+### 🎨 Características Principais
+
+- **Interface Moderna**: Design responsivo com suporte a tema claro/escuro
+- **Sem Banco de Dados**: Armazenamento baseado em arquivos JSON para máxima simplicidade
+- **Segurança Robusta**: Autenticação JWT com controle de acesso baseado em funções
+- **Multiplataforma**: Compatível com desktop e dispositivos móveis
+- **Fácil Implantação**: Configuração simples com Nginx e Node.js
+
+## ✨ Funcionalidades
 
 ### 🔐 Autenticação e Segurança
-- Autenticação segura de usuários com tokens JWT
-- Controle de acesso baseado em funções
-- Hash de senhas com bcrypt
-- Limitação de taxa e cabeçalhos de segurança
+- ✅ Autenticação segura com tokens JWT
+- ✅ Controle de acesso baseado em funções (Admin/Usuário)
+- ✅ Hash de senhas com bcrypt
+- ✅ Limitação de taxa e cabeçalhos de segurança
+- ✅ Proteção contra ataques comuns
 
 ### 📊 Gerenciamento de IPs
-- Suporte a múltiplas sub-redes com notação CIDR
-- Rastreamento de status de IP (Disponível, Ocupado, Reservado, DHCP)
-- Organização baseada em categorias com codificação por cores
-- Armazenamento abrangente de informações de dispositivos
-- Rastreamento de endereços MAC e gerenciamento de hostnames
+- ✅ Suporte a múltiplas sub-redes com notação CIDR
+- ✅ Status de IP: Disponível, Ocupado, Reservado, DHCP
+- ✅ Categorização com cores: Servidores, Estações, Impressoras, Câmeras, etc.
+- ✅ Informações detalhadas: Hostname, MAC Address, Responsável
+- ✅ Sistema de observações e notas
+- ✅ Histórico de alterações com timestamps
 
 ### 🎨 Interface do Usuário
-- Design moderno e responsivo otimizado para todos os dispositivos
-- Suporte a tema escuro/claro com detecção de preferência do sistema
-- Dashboard profissional com visão geral estatística
-- Capacidades avançadas de filtragem e busca
-- Funcionalidade de exportação (formatos JSON/CSV)
+- ✅ Design responsivo para todos os dispositivos
+- ✅ Tema escuro/claro com detecção automática
+- ✅ Dashboard com estatísticas em tempo real
+- ✅ Filtros avançados e busca inteligente
+- ✅ Exportação em JSON e CSV
+- ✅ Animações e micro-interações
 
 ### 🔧 Recursos Técnicos
-- Armazenamento baseado em arquivos (não requer banco de dados)
-- API RESTful com backend Express.js
-- Frontend React com TypeScript
-- Tailwind CSS para estilização consistente
-- Configuração pronta para Nginx para implantação
+- ✅ API RESTful completa
+- ✅ Armazenamento em arquivos JSON
+- ✅ Configuração pronta para Nginx
+- ✅ Logs detalhados e monitoramento
+- ✅ Backup automático de dados
 
-## Instalação e Implantação
+## 🛠 Tecnologias
+
+### Frontend
+- **React 18.3.1** - Biblioteca para interfaces de usuário
+- **TypeScript 5.5.3** - Tipagem estática para JavaScript
+- **Tailwind CSS 3.4.1** - Framework CSS utilitário
+- **Lucide React** - Ícones modernos e consistentes
+- **Vite 5.4.2** - Build tool e dev server
+
+### Backend
+- **Node.js 18+** - Runtime JavaScript
+- **Express.js 4.18.2** - Framework web minimalista
+- **JWT** - Autenticação baseada em tokens
+- **bcrypt** - Hash seguro de senhas
+- **Helmet** - Cabeçalhos de segurança
+
+### Ferramentas
+- **ESLint** - Linting de código
+- **PostCSS** - Processamento de CSS
+- **Concurrently** - Execução paralela de scripts
+
+## 🖼 Demonstração
+
+### Dashboard Principal
+![Dashboard](https://via.placeholder.com/800x400/1f2937/ffffff?text=Dashboard+Principal)
+
+### Gerenciamento de IPs
+![IP Management](https://via.placeholder.com/800x400/3b82f6/ffffff?text=Gerenciamento+de+IPs)
+
+### Tema Escuro
+![Dark Theme](https://via.placeholder.com/800x400/111827/ffffff?text=Tema+Escuro)
+
+## 🚀 Instalação
 
 ### Pré-requisitos
-- Node.js 18+ 
-- npm ou yarn
-- Nginx (para implantação em produção)
 
-### Configuração de Desenvolvimento
+- **Node.js 18+** ([Download](https://nodejs.org/))
+- **npm** ou **yarn**
+- **Nginx** (para produção)
 
-1. **Clone e instale as dependências:**
+### Desenvolvimento
+
+1. **Clone o repositório**
+```bash
+git clone https://github.com/seu-usuario/ip-management-system.git
+cd ip-management-system
+```
+
+2. **Instale as dependências**
 ```bash
 npm install
 ```
 
-2. **Inicie os servidores de desenvolvimento:**
+3. **Inicie o servidor de desenvolvimento**
 ```bash
 npm run dev
 ```
 
-Isso iniciará tanto o servidor da API backend (porta 3001) quanto o servidor de desenvolvimento frontend com Vite.
+4. **Acesse a aplicação**
+```
+http://localhost:5173/ips
+```
 
-### Implantação em Produção
+### Produção
 
-1. **Compile a aplicação:**
+1. **Compile a aplicação**
 ```bash
 npm run build
 ```
 
-2. **Copie os arquivos para o servidor web:**
+2. **Copie para o servidor**
 ```bash
-# Copie os arquivos compilados para seu servidor web
-cp -r dist/* /var/www/html/ips/
-cp -r server /var/www/html/ips/
-cp package*.json /var/www/html/ips/
-```
+# Copie os arquivos compilados
+sudo cp -r dist/* /var/www/html/ips/
+sudo cp -r server /var/www/html/ips/
+sudo cp package*.json /var/www/html/ips/
 
-3. **Instale as dependências de produção:**
-```bash
+# Instale dependências de produção
 cd /var/www/html/ips
-npm install --production
+sudo npm install --production
 ```
 
-4. **Inicie o servidor backend:**
+3. **Configure o PM2** (recomendado)
 ```bash
-# Usando PM2 (recomendado)
+# Instale o PM2 globalmente
+npm install -g pm2
+
+# Inicie a aplicação
 pm2 start server/index.js --name ip-manager
 
-# Ou usando node diretamente
-node server/index.js
+# Configure para iniciar automaticamente
+pm2 startup
+pm2 save
 ```
 
-### Configuração do Nginx
+## ⚙️ Configuração
 
-Crie uma configuração do Nginx para servir a aplicação em `/ips`:
+### Nginx
+
+Crie o arquivo `/etc/nginx/sites-available/ip-manager`:
 
 ```nginx
 server {
@@ -96,7 +184,7 @@ server {
         alias /var/www/html/ips/;
         try_files $uri $uri/ /ips/index.html;
         
-        # Manipular requisições da API
+        # API Proxy
         location /ips/api/ {
             proxy_pass http://localhost:3001/api/;
             proxy_http_version 1.1;
@@ -110,7 +198,7 @@ server {
         }
     }
 
-    # Aplicação Snipe-IT (porta 8080)
+    # Outras aplicações (ex: Snipe-IT)
     location / {
         proxy_pass http://172.16.0.245:8080;
         proxy_set_header Host $host;
@@ -121,83 +209,247 @@ server {
 }
 ```
 
-## Uso
-
-### Primeiro Login
-- **URL:** `http://172.16.0.254/ips`
-- **Credenciais Padrão:** 
-  - Email: `admin@company.com`
-  - Senha: `admin123`
-
-### Gerenciando Endereços IP
-
-1. **Adicionando IPs:** Clique no botão "Adicionar IP" para criar novas entradas
-2. **Editando:** Clique no ícone de edição em qualquer cartão de IP para modificar detalhes
-3. **Filtrando:** Use a barra de filtros para buscar por status, categoria ou texto
-4. **Exportando:** Exporte seus dados em formato JSON ou CSV
-
-### Armazenamento de Dados
-
-Todos os dados são armazenados em arquivos JSON no diretório `/data`:
-- `users.json` - Informações de contas de usuário
-- `ips.json` - Base de dados de endereços IP
-
-### Considerações de Segurança
-
-- Altere as credenciais padrão do administrador imediatamente
-- Use HTTPS em ambientes de produção
-- Implemente regras de firewall para restringir acesso
-- Backup regular dos arquivos de dados
-- Monitore logs de acesso
-
-## Endpoints da API
-
-### Autenticação
-- `POST /api/auth/login` - Login do usuário
-- `POST /api/auth/register` - Criar novo usuário (apenas admin)
-
-### Gerenciamento de IPs
-- `GET /api/ips` - Listar todos os IPs
-- `POST /api/ips` - Criar nova entrada de IP
-- `PUT /api/ips/:id` - Atualizar entrada de IP
-- `DELETE /api/ips/:id` - Deletar entrada de IP
-
-### Exportação de Dados
-- `GET /api/export/json` - Exportar como JSON
-- `GET /api/export/csv` - Exportar como CSV
-
-## Requisitos do Sistema
-
-### Requisitos Mínimos
-- **RAM:** 512MB
-- **Armazenamento:** 1GB de espaço livre
-- **CPU:** 1 vCPU
-
-### Recomendado para Produção
-- **RAM:** 2GB+
-- **Armazenamento:** 5GB+ de espaço livre
-- **CPU:** 2+ vCPUs
-- **Rede:** Ethernet gigabit
-
-## Suporte e Manutenção
-
-### Estratégia de Backup
+Ative a configuração:
 ```bash
-# Backup dos arquivos de dados
-cp -r /var/www/html/ips/data /backup/ip-manager-$(date +%Y%m%d)
+sudo ln -s /etc/nginx/sites-available/ip-manager /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
-### Monitoramento de Logs
-- Logs da aplicação: Logs do PM2 ou saída do console
-- Logs de acesso do Nginx: `/var/log/nginx/access.log`
-- Logs de erro do Nginx: `/var/log/nginx/error.log`
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` (opcional):
+```env
+PORT=3001
+JWT_SECRET=seu-jwt-secret-super-seguro
+NODE_ENV=production
+```
+
+## 📖 Uso
+
+### Primeiro Acesso
+
+1. **Acesse a aplicação**: `http://172.16.0.254/ips`
+2. **Credenciais padrão**:
+   - Email: `admin@company.com`
+   - Senha: `admin123`
+3. **⚠️ Importante**: Altere a senha padrão imediatamente!
+
+### Gerenciando IPs
+
+#### Adicionar Novo IP
+1. Clique em **"Adicionar IP"**
+2. Preencha as informações obrigatórias:
+   - Endereço IP
+   - Sub-rede (CIDR)
+   - Status
+3. Adicione informações opcionais:
+   - Categoria
+   - Hostname
+   - MAC Address
+   - Responsável
+   - Observações
+
+#### Filtrar e Buscar
+- **Busca por texto**: IP, hostname ou descrição
+- **Filtro por status**: Disponível, Ocupado, Reservado, DHCP
+- **Filtro por categoria**: Servidores, Estações, Impressoras, etc.
+
+#### Exportar Dados
+- **JSON**: Formato estruturado para backup
+- **CSV**: Compatível com Excel e outras ferramentas
+
+### Gerenciando Usuários
+
+Apenas administradores podem:
+- Criar novos usuários
+- Definir permissões
+- Gerenciar contas
+
+## 📡 API
+
+### Autenticação
+
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "admin123"
+}
+```
+
+#### Registrar Usuário (Admin)
+```http
+POST /api/auth/register
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@company.com",
+  "password": "senha123"
+}
+```
+
+### Gerenciamento de IPs
+
+#### Listar IPs
+```http
+GET /api/ips
+Authorization: Bearer <token>
+```
+
+#### Criar IP
+```http
+POST /api/ips
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "ip": "192.168.1.10",
+  "subnet": "192.168.1.0/24",
+  "status": "available",
+  "category": "servers",
+  "hostname": "server-01",
+  "description": "Servidor web principal"
+}
+```
+
+#### Atualizar IP
+```http
+PUT /api/ips/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "status": "occupied",
+  "assignedTo": "João Silva"
+}
+```
+
+#### Deletar IP
+```http
+DELETE /api/ips/:id
+Authorization: Bearer <token>
+```
+
+### Exportação
+
+#### Exportar JSON
+```http
+GET /api/export/json
+Authorization: Bearer <token>
+```
+
+#### Exportar CSV
+```http
+GET /api/export/csv
+Authorization: Bearer <token>
+```
+
+## 🤝 Contribuição
+
+Contribuições são sempre bem-vindas! Siga estes passos:
+
+1. **Fork o projeto**
+2. **Crie uma branch para sua feature**
+   ```bash
+   git checkout -b feature/nova-funcionalidade
+   ```
+3. **Commit suas mudanças**
+   ```bash
+   git commit -m 'Adiciona nova funcionalidade'
+   ```
+4. **Push para a branch**
+   ```bash
+   git push origin feature/nova-funcionalidade
+   ```
+5. **Abra um Pull Request**
+
+### Diretrizes
+
+- Siga os padrões de código existentes
+- Adicione testes para novas funcionalidades
+- Atualize a documentação quando necessário
+- Use commits semânticos
+
+### Reportar Bugs
+
+Use as [Issues do GitHub](https://github.com/seu-usuario/ip-management-system/issues) para reportar bugs:
+
+- Descreva o problema claramente
+- Inclua passos para reproduzir
+- Adicione screenshots se relevante
+- Especifique o ambiente (OS, browser, versão)
+
+## 📊 Roadmap
+
+- [ ] **v2.0**: Suporte a VLAN
+- [ ] **v2.1**: Integração com DHCP servers
+- [ ] **v2.2**: Relatórios avançados
+- [ ] **v2.3**: API para integração externa
+- [ ] **v2.4**: Notificações por email
+- [ ] **v2.5**: Auditoria completa
+
+## 🔧 Manutenção
+
+### Backup
+
+```bash
+# Backup diário dos dados
+#!/bin/bash
+DATE=$(date +%Y%m%d)
+cp -r /var/www/html/ips/data /backup/ip-manager-$DATE
+```
+
+### Monitoramento
+
+```bash
+# Verificar status da aplicação
+pm2 status ip-manager
+
+# Ver logs
+pm2 logs ip-manager
+
+# Reiniciar se necessário
+pm2 restart ip-manager
+```
 
 ### Atualizações
+
 1. Pare a aplicação
-2. Faça backup dos arquivos de dados
-3. Implante a nova versão
-4. Reinicie os serviços
+2. Faça backup dos dados
+3. Atualize o código
+4. Reinstale dependências
+5. Reinicie a aplicação
 
-## Licença
+## 📄 Licença
 
-Este projeto é projetado para uso corporativo interno. Modifique e distribua de acordo com as políticas da sua organização.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 🆘 Suporte
+
+### Documentação
+- [Wiki do Projeto](https://github.com/seu-usuario/ip-management-system/wiki)
+- [FAQ](https://github.com/seu-usuario/ip-management-system/wiki/FAQ)
+
+### Comunidade
+- [Discussions](https://github.com/seu-usuario/ip-management-system/discussions)
+- [Issues](https://github.com/seu-usuario/ip-management-system/issues)
+
+### Contato
+- **Email**: suporte@empresa.com
+- **Slack**: #ip-manager
+
+---
+
+<div align="center">
+
+**Desenvolvido com ❤️ para facilitar o gerenciamento de redes corporativas**
+
+[⬆ Voltar ao topo](#-sistema-de-gerenciamento-de-ips)
+
+</div>
