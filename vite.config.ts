@@ -6,9 +6,10 @@ export default defineConfig({
   base: '/ips/',
   server: {
     proxy: {
-      '/api': {
+      '/ips/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ips\/api/, '/api')
       }
     }
   },

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { IPEntry } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = '/ips/api';
 
 export function useAPI() {
   const { token } = useAuth();
