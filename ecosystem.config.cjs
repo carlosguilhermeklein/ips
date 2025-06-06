@@ -13,6 +13,7 @@ module.exports = {
     },
     error_file: '/var/log/pm2/ip-manager-error.log',
     out_file: '/var/log/pm2/ip-manager-out.log',
-    log_file: '/var/log/pm2/ip-manager.log'
+    log_file: '/var/log/pm2/ip-manager.log',
+    time: true
   }]
 };
