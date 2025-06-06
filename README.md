@@ -1,102 +1,102 @@
-# IP Management System
+# Sistema de Gerenciamento de IPs
 
-A professional web-based IP address management system designed for enterprise networks. This application provides comprehensive tools for managing IP allocations, tracking network resources, and maintaining network documentation.
+Um sistema web profissional de gerenciamento de endereços IP projetado para redes corporativas. Esta aplicação fornece ferramentas abrangentes para gerenciar alocações de IP, rastrear recursos de rede e manter documentação de rede.
 
-## Features
+## Funcionalidades
 
-### 🔐 Authentication & Security
-- Secure user authentication with JWT tokens
-- Role-based access control
-- Password hashing with bcrypt
-- Rate limiting and security headers
+### 🔐 Autenticação e Segurança
+- Autenticação segura de usuários com tokens JWT
+- Controle de acesso baseado em funções
+- Hash de senhas com bcrypt
+- Limitação de taxa e cabeçalhos de segurança
 
-### 📊 IP Management
-- Multiple subnet support with CIDR notation
-- IP status tracking (Available, Occupied, Reserved, DHCP)
-- Category-based organization with color coding
-- Comprehensive device information storage
-- MAC address tracking and hostname management
+### 📊 Gerenciamento de IPs
+- Suporte a múltiplas sub-redes com notação CIDR
+- Rastreamento de status de IP (Disponível, Ocupado, Reservado, DHCP)
+- Organização baseada em categorias com codificação por cores
+- Armazenamento abrangente de informações de dispositivos
+- Rastreamento de endereços MAC e gerenciamento de hostnames
 
-### 🎨 User Interface
-- Modern, responsive design optimized for all devices
-- Dark/light theme support with system preference detection
-- Professional dashboard with statistical overview
-- Advanced filtering and search capabilities
-- Export functionality (JSON/CSV formats)
+### 🎨 Interface do Usuário
+- Design moderno e responsivo otimizado para todos os dispositivos
+- Suporte a tema escuro/claro com detecção de preferência do sistema
+- Dashboard profissional com visão geral estatística
+- Capacidades avançadas de filtragem e busca
+- Funcionalidade de exportação (formatos JSON/CSV)
 
-### 🔧 Technical Features
-- File-based storage (no database required)
-- RESTful API with Express.js backend
-- React frontend with TypeScript
-- Tailwind CSS for consistent styling
-- Nginx-ready configuration for deployment
+### 🔧 Recursos Técnicos
+- Armazenamento baseado em arquivos (não requer banco de dados)
+- API RESTful com backend Express.js
+- Frontend React com TypeScript
+- Tailwind CSS para estilização consistente
+- Configuração pronta para Nginx para implantação
 
-## Installation & Deployment
+## Instalação e Implantação
 
-### Prerequisites
+### Pré-requisitos
 - Node.js 18+ 
-- npm or yarn
-- Nginx (for production deployment)
+- npm ou yarn
+- Nginx (para implantação em produção)
 
-### Development Setup
+### Configuração de Desenvolvimento
 
-1. **Clone and install dependencies:**
+1. **Clone e instale as dependências:**
 ```bash
 npm install
 ```
 
-2. **Start development servers:**
+2. **Inicie os servidores de desenvolvimento:**
 ```bash
 npm run dev
 ```
 
-This will start both the backend API server (port 3001) and the frontend development server with Vite.
+Isso iniciará tanto o servidor da API backend (porta 3001) quanto o servidor de desenvolvimento frontend com Vite.
 
-### Production Deployment
+### Implantação em Produção
 
-1. **Build the application:**
+1. **Compile a aplicação:**
 ```bash
 npm run build
 ```
 
-2. **Copy files to web server:**
+2. **Copie os arquivos para o servidor web:**
 ```bash
-# Copy built files to your web server
+# Copie os arquivos compilados para seu servidor web
 cp -r dist/* /var/www/html/ips/
 cp -r server /var/www/html/ips/
 cp package*.json /var/www/html/ips/
 ```
 
-3. **Install production dependencies:**
+3. **Instale as dependências de produção:**
 ```bash
 cd /var/www/html/ips
 npm install --production
 ```
 
-4. **Start the backend server:**
+4. **Inicie o servidor backend:**
 ```bash
-# Using PM2 (recommended)
+# Usando PM2 (recomendado)
 pm2 start server/index.js --name ip-manager
 
-# Or using node directly
+# Ou usando node diretamente
 node server/index.js
 ```
 
-### Nginx Configuration
+### Configuração do Nginx
 
-Create an Nginx configuration to serve the application at `/ips`:
+Crie uma configuração do Nginx para servir a aplicação em `/ips`:
 
 ```nginx
 server {
     listen 80;
     server_name 172.16.0.254;
 
-    # IP Manager Application
+    # Aplicação IP Manager
     location /ips/ {
         alias /var/www/html/ips/;
         try_files $uri $uri/ /ips/index.html;
         
-        # Handle API requests
+        # Manipular requisições da API
         location /ips/api/ {
             proxy_pass http://localhost:3001/api/;
             proxy_http_version 1.1;
@@ -110,7 +110,7 @@ server {
         }
     }
 
-    # Snipe-IT Application (port 8080)
+    # Aplicação Snipe-IT (porta 8080)
     location / {
         proxy_pass http://172.16.0.245:8080;
         proxy_set_header Host $host;
@@ -121,83 +121,83 @@ server {
 }
 ```
 
-## Usage
+## Uso
 
-### First Login
+### Primeiro Login
 - **URL:** `http://172.16.0.254/ips`
-- **Default Credentials:** 
+- **Credenciais Padrão:** 
   - Email: `admin@company.com`
-  - Password: `admin123`
+  - Senha: `admin123`
 
-### Managing IP Addresses
+### Gerenciando Endereços IP
 
-1. **Adding IPs:** Click the "Add IP" button to create new entries
-2. **Editing:** Click the edit icon on any IP card to modify details
-3. **Filtering:** Use the filter bar to search by status, category, or text
-4. **Exporting:** Export your data in JSON or CSV format
+1. **Adicionando IPs:** Clique no botão "Adicionar IP" para criar novas entradas
+2. **Editando:** Clique no ícone de edição em qualquer cartão de IP para modificar detalhes
+3. **Filtrando:** Use a barra de filtros para buscar por status, categoria ou texto
+4. **Exportando:** Exporte seus dados em formato JSON ou CSV
 
-### Data Storage
+### Armazenamento de Dados
 
-All data is stored in JSON files in the `/data` directory:
-- `users.json` - User account information
-- `ips.json` - IP address database
+Todos os dados são armazenados em arquivos JSON no diretório `/data`:
+- `users.json` - Informações de contas de usuário
+- `ips.json` - Base de dados de endereços IP
 
-### Security Considerations
+### Considerações de Segurança
 
-- Change default admin credentials immediately
-- Use HTTPS in production environments
-- Implement firewall rules to restrict access
-- Regular backup of data files
-- Monitor access logs
+- Altere as credenciais padrão do administrador imediatamente
+- Use HTTPS em ambientes de produção
+- Implemente regras de firewall para restringir acesso
+- Backup regular dos arquivos de dados
+- Monitore logs de acesso
 
-## API Endpoints
+## Endpoints da API
 
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/register` - Create new user (admin only)
+### Autenticação
+- `POST /api/auth/login` - Login do usuário
+- `POST /api/auth/register` - Criar novo usuário (apenas admin)
 
-### IP Management
-- `GET /api/ips` - List all IPs
-- `POST /api/ips` - Create new IP entry
-- `PUT /api/ips/:id` - Update IP entry
-- `DELETE /api/ips/:id` - Delete IP entry
+### Gerenciamento de IPs
+- `GET /api/ips` - Listar todos os IPs
+- `POST /api/ips` - Criar nova entrada de IP
+- `PUT /api/ips/:id` - Atualizar entrada de IP
+- `DELETE /api/ips/:id` - Deletar entrada de IP
 
-### Data Export
-- `GET /api/export/json` - Export as JSON
-- `GET /api/export/csv` - Export as CSV
+### Exportação de Dados
+- `GET /api/export/json` - Exportar como JSON
+- `GET /api/export/csv` - Exportar como CSV
 
-## System Requirements
+## Requisitos do Sistema
 
-### Minimum Requirements
+### Requisitos Mínimos
 - **RAM:** 512MB
-- **Storage:** 1GB free space
+- **Armazenamento:** 1GB de espaço livre
 - **CPU:** 1 vCPU
 
-### Recommended for Production
+### Recomendado para Produção
 - **RAM:** 2GB+
-- **Storage:** 5GB+ free space
+- **Armazenamento:** 5GB+ de espaço livre
 - **CPU:** 2+ vCPUs
-- **Network:** Gigabit ethernet
+- **Rede:** Ethernet gigabit
 
-## Support & Maintenance
+## Suporte e Manutenção
 
-### Backup Strategy
+### Estratégia de Backup
 ```bash
-# Backup data files
+# Backup dos arquivos de dados
 cp -r /var/www/html/ips/data /backup/ip-manager-$(date +%Y%m%d)
 ```
 
-### Log Monitoring
-- Application logs: PM2 logs or console output
-- Nginx access logs: `/var/log/nginx/access.log`
-- Nginx error logs: `/var/log/nginx/error.log`
+### Monitoramento de Logs
+- Logs da aplicação: Logs do PM2 ou saída do console
+- Logs de acesso do Nginx: `/var/log/nginx/access.log`
+- Logs de erro do Nginx: `/var/log/nginx/error.log`
 
-### Updates
-1. Stop the application
-2. Backup data files
-3. Deploy new version
-4. Restart services
+### Atualizações
+1. Pare a aplicação
+2. Faça backup dos arquivos de dados
+3. Implante a nova versão
+4. Reinicie os serviços
 
-## License
+## Licença
 
-This project is designed for internal enterprise use. Modify and distribute according to your organization's policies.
+Este projeto é projetado para uso corporativo interno. Modifique e distribua de acordo com as políticas da sua organização.
