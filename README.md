@@ -222,7 +222,7 @@ pm2 status
 pm2 logs ip-manager
 
 # Testar API
-curl http://localhost:3001/api/ips
+curl http://localhost:3001/api/health
 ```
 
 ## ⚙️ Configuração
@@ -234,7 +234,7 @@ Crie o arquivo `/etc/nginx/sites-available/ip-manager`:
 ```nginx
 server {
     listen 80;
-    server_name 172.16.0.254;
+    server_name 172.16.0.245;
 
     # Logs
     access_log /var/log/nginx/ip-manager-access.log;
@@ -271,14 +271,15 @@ server {
         proxy_read_timeout 60s;
     }
 
-    # Outras aplicações (ex: Snipe-IT)
-    location / {
-        proxy_pass http://172.16.0.245:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+    # Outras aplicações podem ser adicionadas aqui
+    # Exemplo para Snipe-IT em outro servidor:
+    # location / {
+    #     proxy_pass http://outro-servidor:8080;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    # }
 }
 ```
 
@@ -312,7 +313,7 @@ sudo ufw allow from 127.0.0.1 to any port 3001
 
 ### Primeiro Acesso
 
-1. **Acesse a aplicação**: `http://172.16.0.254/ips`
+1. **Acesse a aplicação**: `http://172.16.0.245/ips`
 2. **Credenciais padrão**:
    - Email: `admin@company.com`
    - Senha: `admin123`
@@ -482,7 +483,7 @@ echo "Backup concluído: ip-manager-data-$DATE.tar.gz"
 
 ```bash
 # Verificar se a aplicação está respondendo
-curl -f http://localhost:3001/api/ips > /dev/null 2>&1
+curl -f http://localhost:3001/api/health > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "API não está respondendo!"
     pm2 restart ip-manager
@@ -534,7 +535,7 @@ ls -la /var/www/html/ips/
 #### 2. Erro 502 Bad Gateway
 ```bash
 # Verificar se o backend está rodando
-curl http://localhost:3001/api/ips
+curl http://localhost:3001/api/health
 
 # Verificar configuração do Nginx
 sudo nginx -t
