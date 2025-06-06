@@ -138,34 +138,91 @@ http://localhost:5173/ips
 
 ### Produção
 
-1. **Compile a aplicação**
+#### 1. Preparação do Ambiente
+
 ```bash
-npm run build
+# Crie o diretório da aplicação
+sudo mkdir -p /var/www/html/ips
+sudo chown -R $USER:$USER /var/www/html/ips
 ```
 
-2. **Copie para o servidor**
+#### 2. Build e Deploy
+
 ```bash
-# Copie os arquivos compilados
+# No diretório do projeto, compile a aplicação
+npm run build
+
+# Copie todos os arquivos necessários
 sudo cp -r dist/* /var/www/html/ips/
 sudo cp -r server /var/www/html/ips/
+sudo cp -r data /var/www/html/ips/
 sudo cp package*.json /var/www/html/ips/
 
-# Instale dependências de produção
-cd /var/www/html/ips
-sudo npm install --production
+# Ajuste as permissões
+sudo chown -R www-data:www-data /var/www/html/ips
+sudo chmod -R 755 /var/www/html/ips
+sudo chmod -R 775 /var/www/html/ips/data
 ```
 
-3. **Configure o PM2** (recomendado)
+#### 3. Instalar Dependências de Produção
+
 ```bash
-# Instale o PM2 globalmente
-npm install -g pm2
+cd /var/www/html/ips
+sudo npm install --production --omit=dev
+```
+
+#### 4. Configurar PM2
+
+```bash
+# Instale o PM2 globalmente (se não estiver instalado)
+sudo npm install -g pm2
+
+# Crie arquivo de configuração do PM2
+sudo tee /var/www/html/ips/ecosystem.config.js > /dev/null << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'ip-manager',
+    script: './server/index.js',
+    cwd: '/var/www/html/ips',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 3001
+    },
+    error_file: '/var/log/pm2/ip-manager-error.log',
+    out_file: '/var/log/pm2/ip-manager-out.log',
+    log_file: '/var/log/pm2/ip-manager.log'
+  }]
+};
+EOF
+
+# Crie diretório de logs
+sudo mkdir -p /var/log/pm2
+sudo chown -R $USER:$USER /var/log/pm2
 
 # Inicie a aplicação
-pm2 start server/index.js --name ip-manager
+cd /var/www/html/ips
+pm2 start ecosystem.config.js
 
 # Configure para iniciar automaticamente
 pm2 startup
 pm2 save
+```
+
+#### 5. Verificar Status
+
+```bash
+# Verificar se a aplicação está rodando
+pm2 status
+
+# Verificar logs
+pm2 logs ip-manager
+
+# Testar API
+curl http://localhost:3001/api/ips
 ```
 
 ## ⚙️ Configuração
@@ -179,23 +236,39 @@ server {
     listen 80;
     server_name 172.16.0.254;
 
+    # Logs
+    access_log /var/log/nginx/ip-manager-access.log;
+    error_log /var/log/nginx/ip-manager-error.log;
+
     # Aplicação IP Manager
     location /ips/ {
         alias /var/www/html/ips/;
+        index index.html;
         try_files $uri $uri/ /ips/index.html;
         
-        # API Proxy
-        location /ips/api/ {
-            proxy_pass http://localhost:3001/api/;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_cache_bypass $http_upgrade;
+        # Cache para arquivos estáticos
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
         }
+    }
+    
+    # API Proxy
+    location /ips/api/ {
+        proxy_pass http://localhost:3001/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
     }
 
     # Outras aplicações (ex: Snipe-IT)
@@ -218,11 +291,21 @@ sudo systemctl reload nginx
 
 ### Variáveis de Ambiente
 
-Crie um arquivo `.env` (opcional):
+Crie um arquivo `.env` em `/var/www/html/ips/` (opcional):
 ```env
 PORT=3001
-JWT_SECRET=seu-jwt-secret-super-seguro
+JWT_SECRET=seu-jwt-secret-super-seguro-mude-isso-em-producao
 NODE_ENV=production
+```
+
+### Firewall (UFW)
+
+```bash
+# Permitir tráfego HTTP
+sudo ufw allow 80/tcp
+
+# Permitir apenas conexões locais na porta da API
+sudo ufw allow from 127.0.0.1 to any port 3001
 ```
 
 ## 📖 Uso
@@ -350,6 +433,133 @@ GET /api/export/csv
 Authorization: Bearer <token>
 ```
 
+## 🔧 Manutenção
+
+### Comandos Úteis
+
+```bash
+# Verificar status da aplicação
+pm2 status ip-manager
+
+# Ver logs em tempo real
+pm2 logs ip-manager --lines 100
+
+# Reiniciar aplicação
+pm2 restart ip-manager
+
+# Parar aplicação
+pm2 stop ip-manager
+
+# Verificar uso de recursos
+pm2 monit
+
+# Recarregar configuração
+pm2 reload ip-manager
+```
+
+### Backup
+
+```bash
+# Script de backup diário
+#!/bin/bash
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/backup/ip-manager"
+DATA_DIR="/var/www/html/ips/data"
+
+# Criar diretório de backup
+mkdir -p $BACKUP_DIR
+
+# Backup dos dados
+tar -czf $BACKUP_DIR/ip-manager-data-$DATE.tar.gz -C $DATA_DIR .
+
+# Manter apenas os últimos 30 backups
+find $BACKUP_DIR -name "ip-manager-data-*.tar.gz" -mtime +30 -delete
+
+echo "Backup concluído: ip-manager-data-$DATE.tar.gz"
+```
+
+### Monitoramento
+
+```bash
+# Verificar se a aplicação está respondendo
+curl -f http://localhost:3001/api/ips > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "API não está respondendo!"
+    pm2 restart ip-manager
+fi
+
+# Verificar uso de memória
+pm2 show ip-manager | grep memory
+
+# Verificar logs de erro
+tail -f /var/log/pm2/ip-manager-error.log
+```
+
+### Atualizações
+
+```bash
+# 1. Parar a aplicação
+pm2 stop ip-manager
+
+# 2. Backup dos dados
+cp -r /var/www/html/ips/data /backup/ip-manager-data-$(date +%Y%m%d)
+
+# 3. Atualizar código (substitua pelos novos arquivos)
+# ... copie os novos arquivos ...
+
+# 4. Reinstalar dependências
+cd /var/www/html/ips
+npm install --production
+
+# 5. Reiniciar aplicação
+pm2 start ip-manager
+```
+
+## 🚨 Solução de Problemas
+
+### Problemas Comuns
+
+#### 1. Aplicação não inicia
+```bash
+# Verificar logs
+pm2 logs ip-manager
+
+# Verificar se a porta está em uso
+netstat -tlnp | grep 3001
+
+# Verificar permissões
+ls -la /var/www/html/ips/
+```
+
+#### 2. Erro 502 Bad Gateway
+```bash
+# Verificar se o backend está rodando
+curl http://localhost:3001/api/ips
+
+# Verificar configuração do Nginx
+sudo nginx -t
+
+# Verificar logs do Nginx
+tail -f /var/log/nginx/error.log
+```
+
+#### 3. Problemas de permissão
+```bash
+# Corrigir permissões
+sudo chown -R www-data:www-data /var/www/html/ips
+sudo chmod -R 755 /var/www/html/ips
+sudo chmod -R 775 /var/www/html/ips/data
+```
+
+#### 4. Dados não salvam
+```bash
+# Verificar se o diretório data existe e tem permissões
+ls -la /var/www/html/ips/data/
+
+# Verificar logs da aplicação
+pm2 logs ip-manager | grep -i error
+```
+
 ## 🤝 Contribuição
 
 Contribuições são sempre bem-vindas! Siga estes passos:
@@ -393,38 +603,6 @@ Use as [Issues do GitHub](https://github.com/seu-usuario/ip-management-system/is
 - [ ] **v2.3**: API para integração externa
 - [ ] **v2.4**: Notificações por email
 - [ ] **v2.5**: Auditoria completa
-
-## 🔧 Manutenção
-
-### Backup
-
-```bash
-# Backup diário dos dados
-#!/bin/bash
-DATE=$(date +%Y%m%d)
-cp -r /var/www/html/ips/data /backup/ip-manager-$DATE
-```
-
-### Monitoramento
-
-```bash
-# Verificar status da aplicação
-pm2 status ip-manager
-
-# Ver logs
-pm2 logs ip-manager
-
-# Reiniciar se necessário
-pm2 restart ip-manager
-```
-
-### Atualizações
-
-1. Pare a aplicação
-2. Faça backup dos dados
-3. Atualize o código
-4. Reinstale dependências
-5. Reinicie a aplicação
 
 ## 📄 Licença
 

@@ -34,10 +34,23 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for development
+}));
 app.use(limiter);
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the root directory (where dist files are copied)
+app.use(express.static(path.join(__dirname, '..'), {
+  index: false, // Don't serve index.html automatically
+  setHeaders: (res, path) => {
+    // Set cache headers for static assets
+    if (path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year
+    }
+  }
+}));
 
 // Helper functions
 async function readJsonFile(filePath, defaultData = []) {
@@ -90,6 +103,11 @@ async function initializeDefaultUser() {
 
 await initializeDefaultUser();
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Auth routes
 app.post('/api/auth/login', async (req, res) => {
   try {
@@ -122,6 +140,7 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -158,6 +177,7 @@ app.post('/api/auth/register', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Register error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -168,6 +188,7 @@ app.get('/api/ips', authenticateToken, async (req, res) => {
     const ips = await readJsonFile(IPS_FILE, []);
     res.json(ips);
   } catch (error) {
+    console.error('Get IPs error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -186,6 +207,7 @@ app.post('/api/ips', authenticateToken, async (req, res) => {
     await writeJsonFile(IPS_FILE, ips);
     res.json(newIp);
   } catch (error) {
+    console.error('Create IP error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -208,6 +230,7 @@ app.put('/api/ips/:id', authenticateToken, async (req, res) => {
     await writeJsonFile(IPS_FILE, ips);
     res.json(ips[index]);
   } catch (error) {
+    console.error('Update IP error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -224,6 +247,7 @@ app.delete('/api/ips/:id', authenticateToken, async (req, res) => {
     await writeJsonFile(IPS_FILE, filteredIps);
     res.json({ message: 'IP deleted successfully' });
   } catch (error) {
+    console.error('Delete IP error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -257,10 +281,25 @@ app.get('/api/export/:format', authenticateToken, async (req, res) => {
       res.status(400).json({ error: 'Invalid format' });
     }
   } catch (error) {
+    console.error('Export error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
+// Catch-all handler: send back React's index.html file for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📁 Data directory: ${DATA_DIR}`);
+  console.log(`🌐 API available at: http://localhost:${PORT}/api`);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
 });
